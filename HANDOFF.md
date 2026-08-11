@@ -336,7 +336,39 @@ Lưu ý: bản hiện tại **đã công bố rồi** — xuất bản mới kh�
 **Quy tắc rút ra:** nội dung bị cắt vì **lý do độ chính xác** (khác với cắt cho gọn hay
 cho đẹp bố cục) thì phải cắt khỏi cả CV PDF, vì trang đăng lại chính file đó.
 
-### 4.6 Khi trang đã ưng hoàn toàn
+### 4.6 Việc nhỏ còn tồn từ đợt audit 2026-08-12
+
+Đợt audit ra 30 phát hiện, 15 sống sót sau phản biện. Phần sửa được bằng code đã làm
+trong commit `f054a9e`. Còn lại đây, **không cái nào chặn gì**, xếp theo mức đáng làm:
+
+1. **Câu chữ tiếng Việt cần chủ trang quyết** (đây là tuyên bố của bạn, không phải việc
+   của agent tự sửa):
+   - `profile.ts` bản `vi` **rơi mất chữ "production"**. Bản `en` ghi *"internal
+     production services"*, bản `vi` chỉ còn *"các service nội bộ"*. Với hồ sơ SRE thì
+     "production" đúng là chữ phân biệt hệ thống chạy thật với lab — mà chính bạn đã
+     quyết bỏ chữ "Labs" ở dự án #4 vì lý do y hệt. Câu này còn được dùng làm
+     `<meta description>` của `/vi`.
+   - `projects.ts` dự án #1, bullet đầu: bản `vi` thêm **"toàn bộ"** mà bản `en` không
+     có (`en` chỉ nói *"internal apps and services"*), đồng thời rơi mất vế "services".
+     Hai bản đang nói phạm vi khác nhau trong khi cả `/en` lẫn `/vi` đều được index.
+
+2. **`<meta description>` dài 533 ký tự** (bản vi 494), vì đang dùng lại nguyên đoạn
+   `profile.summary` của phần đầu trang. Google cắt bớt khi hiển thị. Cách sửa: thêm
+   `seoDescription: Localized<string>` (~155 ký tự) vào `Profile` trong `types.ts` và
+   `profile.ts`, dùng riêng cho metadata, giữ `summary` dài cho phần hero.
+
+3. **Chưa có skip link.** Người dùng bàn phím phải tab qua tối đa 10 điểm dừng ở header
+   trước khi tới nội dung. Link tên ở đầu trỏ `#top` nên *có* bỏ qua được, nhưng tên
+   nhãn của nó là tên chủ trang nên không ai đoán được đó là skip link. Cách sửa: gắn
+   `id="content"` cho `<main>` trong `page.tsx`, thêm một anchor `sr-only
+   focus:not-sr-only` làm con đầu tiên của `<header>`, chữ để trong `dictionaries.ts`.
+
+**Đã kiểm và KHÔNG phải vấn đề** (đừng mở lại): `next/image` phục vụ avatar qua
+`/_next/image` không phá cam kết tĩnh — bị bác hai lần trong audit; độ tương phản màu ở
+cả hai theme đều đạt; `og:locale:alternate` không cần; `/` trả 307 về `/en` là đúng và
+không cần vào sitemap.
+
+### 4.7 Khi trang đã ưng hoàn toàn
 
 Tag `v1.0` theo quy ước trong `CLAUDE.md`, và thêm dòng vào bảng Lịch sử phiên bản.
 
