@@ -32,7 +32,13 @@ Cập nhật lần cuối: 2026-08-11
 git clone https://github.com/nhhandevops/nhhan-portfolio.git
 cd nhhan-portfolio
 npm install
+npx next typegen     # ⚠️ đừng bỏ, xem ngay dưới
 ```
+
+**`npx next typegen` là bắt buộc trên máy mới.** `PageProps` và `LayoutProps` là helper
+toàn cục do Next sinh ra vào `.next/types/`, mà `.next` nằm trong `.gitignore` nên clone
+về là không có. Bỏ qua bước này thì `npm run check` hỏng ngay với
+`Cannot find name 'PageProps'` dù chưa sửa dòng code nào — xem `SETUP-001`.
 
 ### 0.4 ⚠️ Tạo `.env.local` — bước dễ quên nhất
 
@@ -152,6 +158,8 @@ Quy ước: commit theo từng đợt việc lớn, mỗi mốc quan trọng g�
 | --- | --- | --- |
 | `v0.1` | 2026-08-11 | Khung Next.js 16 + TS + Tailwind v4. Song ngữ EN/VI. Nội dung thật từ CV. Tích hợp GitHub (pinned + repo mới, cache 1h). SEO + hreflang + sitemap + OG image tĩnh. Dark/light mode. Nút tải CV. Bộ tài liệu đầy đủ. |
 | `v0.2` | 2026-08-11 | **Lên production.** Repo public `nhhandevops/nhhan-portfolio`, deploy Vercel Hobby tại `nhhan-portfolio.vercel.app`. Đã verify thật: `/en` `/vi` 200, `/` → 307, canonical + og:url + sitemap + robots đều trỏ domain thật, section GitHub trả 6 repo, tải CV và OG image OK, `x-vercel-cache: HIT` (phục vụ từ CDN, không tốn invocation). |
+| `v0.4` | 2026-08-11 | **Nội dung đã rà soát.** Chủ trang xác nhận toàn bộ chỗ suy diễn từ CV là đúng thực tế (mục 4.1 đóng, không sửa gì). Lọc bớt phần thừa (mục 4.2): dự án #4 đổi tên thành *AWS Account Hardening & Cost Governance*, skills bỏ `Security Groups`/`NACLs`/`Trino`, bullet dự án 18 → 12 dòng. Thêm `SETUP-001` (máy mới phải chạy `npx next typegen`). Bổ sung dòng `v0.3` còn thiếu trong bảng này. |
+| `v0.3` | 2026-08-11 | **Sẵn sàng bàn giao.** `HANDOFF.md` đủ để một máy khác clone về và làm tiếp mà không cần hỏi lại: hướng dẫn setup, cách tạo `.env.local`, vòng làm việc, danh sách việc còn lại kèm lý do, và các ràng buộc vận hành không được phá. Thêm `.gitattributes` chuẩn hoá xuống dòng. |
 
 ---
 
@@ -234,37 +242,39 @@ Không cần sửa component. Repo GitHub thì tự động, không cần đụn
 
 Xếp theo mức ảnh hưởng. **Không cái nào chặn trang chạy** — production đang sống bình thường.
 
-### 4.1 ⭐ Rà soát câu chữ cho khớp kinh nghiệm thật
+### 4.1 ✅ Rà soát câu chữ — ĐÃ XONG (2026-08-11)
 
-Nội dung sinh từ CV, nhưng **những chỗ sau là suy diễn, không có trong CV** — chủ trang
-cần xác nhận hoặc sửa:
+Chủ trang đã rà từng chỗ suy diễn và **xác nhận tất cả đều đúng thực tế**. Không sửa gì.
+Ghi lại đây để lần sau không ai "sửa cho an toàn" những câu đã được kiểm chứng:
 
-| Chỗ | Đang ghi | Vấn đề |
-| --- | --- | --- |
-| `role` của cả 4 dự án | "Design, deployment, and operations" | **Rủi ro cao.** CV không nói vai trò từng dự án. Nếu làm cùng team chứ không chủ trì thì đang nói quá |
-| `period` của cả 4 dự án | "2024 — nay" | CV không ghi mốc riêng từng dự án |
-| `status` | 3 × `maintained`, 1 × `active` | Suy ra từ ngữ cảnh |
-| Câu mô tả đầu mỗi project card | Tự viết hoàn toàn | Xem 4 cụm bên dưới |
-| `profile.summary` | "Currently going deeper on Kubernetes" | CV ghi "Strong interest in Kubernetes" — bản trên trang mạnh hơn |
+| Chỗ | Kết luận |
+| --- | --- |
+| `role` của cả 4 dự án — "Design, deployment, and operations" | ✅ Đúng, chủ trì cả ba khâu |
+| `period` của cả 4 dự án — "2024 — nay" | ✅ Đúng, giữ nguyên |
+| *"so the Infrastructure team stops creating accounts by hand"* | ✅ Đúng |
+| *"managed through a UI instead of hand-edited configs"* | ✅ Đúng |
+| *"without waiting on engineering"* | ✅ Đúng |
+| *"…toward CKA"* | ✅ Đúng, đang thật sự hướng tới chứng chỉ |
+| `profile.summary` — "Currently going deeper on Kubernetes" | ✅ Giữ bản mạnh hơn CV, có lab EKS/GKE thật đỡ lưng |
 
-Bốn cụm thêm vào mà CV không hề có, cần kiểm chứng: *"so the Infrastructure team stops
-creating accounts by hand"* · *"managed through a UI instead of hand-edited configs"* ·
-*"without waiting on engineering"* · *"hardening AWS accounts… toward CKA"*.
+**Còn một mục chưa hỏi:** `status` của 4 dự án (3 × `maintained`, 1 × `active`) vẫn là suy
+ra từ ngữ cảnh. Ảnh hưởng thấp — chỉ đổi một cái nhãn nhỏ trên card.
 
 **Toàn bộ bản tiếng Việt là bản dịch**, xưng hô "mình". Muốn trang trọng hơn thì đổi
 thành "tôi" ở `profile.summary` và `contact.subtitle` trong `src/i18n/dictionaries.ts`.
 
-### 4.2 Lọc bớt nội dung thừa
+### 4.2 ✅ Lọc bớt nội dung thừa — ĐÃ XONG (2026-08-11)
 
-- **Dự án #4 "Cloud Security, Cost, and Kubernetes Labs"** là mắt xích yếu nhất: ba dự án
-  kia là hệ thống chạy thật, cái này là mảng nghiên cứu, chữ "Labs" đứng cạnh chúng dễ bị
-  đọc thành "chưa làm thật". Cân nhắc đổi tên theo kết quả (ví dụ *AWS Account Hardening
-  & Cost Governance*) hoặc cắt hẳn, chuyển ý vào phần Kinh nghiệm.
-- **Nhóm "Networking & Security"** có 11 mục; `Security Groups` và `NACLs` là kiến thức
-  AWS cơ bản, đứng cạnh `GuardDuty`/`Detective` làm loãng cả nhóm.
-- **Nhóm "Data & Messaging"** có 9 mục. Giữ cái nào vận hành thật, bỏ cái nào chỉ chạm
-  qua — liệt kê ra là phỏng vấn sẽ hỏi vào đó.
-- Phần Dự án đang có ~18 gạch đầu dòng. Rút xuống 3 dòng mỗi dự án thì đọc thoáng hơn.
+- **Dự án #4 đổi tên** "Cloud Security, Cost, and Kubernetes Labs" → **"AWS Account
+  Hardening & Cost Governance"**. Bỏ chữ "Labs" khỏi tiêu đề vì đứng cạnh 3 hệ thống
+  production dễ bị đọc thành "chưa làm thật"; phần EKS/GKE vẫn giữ nguyên trong bullet
+  nên không giấu gì. Cắt luôn 2 bullet lạc đề (AWS Marketplace, Google AI Studio) và bỏ
+  `Google AI Studio` khỏi `stack` cho khớp tên mới.
+- **"Networking & Security"** 11 → 9 mục: bỏ `Security Groups`, `NACLs`.
+- **"Data & Messaging"** 9 → 8 mục: bỏ `Trino` (chỉ chạm qua, không vận hành thật).
+  8 mục còn lại đều được xác nhận là vận hành thật, trả lời được khi hỏi sâu.
+- **Bullet dự án 18 → 12**, mỗi dự án đúng 3 dòng theo mạch *làm gì — tích hợp gì — vận
+  hành thế nào*. Các dòng bị cắt đều trùng ý với `description` của chính card đó.
 
 ### 4.3 Pin repo trên GitHub profile
 

@@ -47,6 +47,46 @@ lỗi type.
 
 ---
 
+## SETUP-001 — Máy mới clone về: `npm run check` báo `Cannot find name 'PageProps'`
+
+**Triệu chứng:** vừa `git clone` + `npm install` xong, chạy `npm run check` thì hỏng ngay
+dù chưa sửa một dòng code nào:
+
+```
+src/app/[lang]/layout.tsx(24,4): error TS2304: Cannot find name 'LayoutProps'.
+src/app/[lang]/layout.tsx(75,4): error TS2304: Cannot find name 'LayoutProps'.
+src/app/[lang]/page.tsx(27,52): error TS2304: Cannot find name 'PageProps'.
+```
+
+**Nguyên nhân gốc:** `PageProps` / `LayoutProps` / `RouteContext` là helper toàn cục do
+`next typegen` **sinh ra** vào `.next/types/`. Thư mục `.next` nằm trong `.gitignore` nên
+máy mới clone về hoàn toàn không có. `tsc --noEmit` chạy độc lập, không tự kích hoạt
+typegen ⇒ báo thiếu tên.
+
+Không phải lỗi code. Không liên quan tới `BUILD-001` (đó là hết RAM) hay `NEXT16-001`
+(đó là route ảnh vốn dĩ không có helper, phải khai tay).
+
+**Cách xác minh:**
+
+```powershell
+Test-Path .next\types    # False ⇒ đúng ca này
+```
+
+**Cách sửa — chạy một lần sau khi clone:**
+
+```powershell
+npx next typegen
+npm run check            # giờ phải sạch
+```
+
+`npm run dev` và `npm run build` cũng tự sinh types, nên nếu đã chạy một trong hai thì
+không gặp lỗi này. Nó chỉ xuất hiện khi `npm run check` là lệnh Next đầu tiên được chạy —
+mà đó lại đúng là thói quen được khuyến khích ở `HANDOFF.md` mục 0.6.
+
+**Ngày:** 2026-08-11
+
+---
+
 ## I18N-001 — `as const` làm bản dịch tiếng Việt không compile
 
 **Triệu chứng:** ~33 lỗi TypeScript trong `src/i18n/dictionaries.ts`:

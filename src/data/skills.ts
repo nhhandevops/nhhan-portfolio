@@ -4,6 +4,13 @@ import type { SkillGroup } from "./types";
  * Nguồn: mục "Core Skills" trong CV.
  * "Google Cloud" đã gộp vào "GCP" cho khỏi trùng.
  * IELTS chuyển sang src/data/certifications.ts, đúng chỗ hơn.
+ *
+ * Đã lược (chủ trang xác nhận 2026-08-11):
+ * - `Security Groups`, `NACLs` — kiến thức AWS cơ bản, đứng cạnh GuardDuty/Detective
+ *   làm loãng nhóm. Ai cũng mặc định SRE biết, không cần liệt kê.
+ * - `Trino` — chỉ chạm qua, không vận hành thật. Liệt kê ra là phỏng vấn hỏi vào.
+ *
+ * Nguyên tắc: chỉ giữ thứ tự tin trả lời được khi bị hỏi sâu.
  */
 export const skillGroups: SkillGroup[] = [
   {
@@ -54,8 +61,6 @@ export const skillGroups: SkillGroup[] = [
       "Google OAuth2",
       "Nginx Proxy Manager",
       "HAProxy",
-      "Security Groups",
-      "NACLs",
       "GuardDuty",
       "Security Hub",
       "Detective",
@@ -69,7 +74,6 @@ export const skillGroups: SkillGroup[] = [
       "NocoDB",
       "Kafka",
       "RabbitMQ",
-      "Trino",
       "StarRocks",
       "Elasticsearch",
       "Kibana",
