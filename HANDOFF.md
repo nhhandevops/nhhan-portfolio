@@ -8,7 +8,14 @@ Cập nhật lần cuối: 2026-08-11
 
 ## 1. Trạng thái hiện tại
 
-Khung dự án đã dựng xong, **build sạch**, và **đã đổ nội dung thật từ CV**.
+**🌐 Production: https://nhhan-portfolio.vercel.app**
+**📦 Repo: https://github.com/nhhandevops/nhhan-portfolio** (public)
+
+Dùng domain `nhhan-portfolio.vercel.app` khi dán link đi đâu. URL dài dạng
+`nhhan-portfolio-<hash>-nhhan-personal.vercel.app` là của riêng một lần deploy,
+đổi sau mỗi lần push — đừng đưa vào CV hay LinkedIn.
+
+Trang đã lên sóng, **build sạch**, và **đã đổ nội dung thật từ CV**.
 
 | Hạng mục | Trạng thái |
 | --- | --- |
@@ -20,7 +27,7 @@ Khung dự án đã dựng xong, **build sạch**, và **đã đổ nội dung t
 | SEO: metadata, canonical, hreflang, sitemap, robots | ✅ |
 | OG image tự sinh, tĩnh, hiển thị đúng dấu tiếng Việt | ✅ |
 | Nội dung thật từ CV (bản 2026-08-11) | ✅ |
-| Deploy Vercel | ⏳ |
+| Deploy Vercel | ✅ đã verify trên production |
 
 ### 1.1 Quyết định khi trích CV — đọc trước khi sửa nội dung
 
@@ -57,6 +64,7 @@ Quy ước: commit theo từng đợt việc lớn, mỗi mốc quan trọng g�
 | Version | Ngày | Nội dung |
 | --- | --- | --- |
 | `v0.1` | 2026-08-11 | Khung Next.js 16 + TS + Tailwind v4. Song ngữ EN/VI. Nội dung thật từ CV. Tích hợp GitHub (pinned + repo mới, cache 1h). SEO + hreflang + sitemap + OG image tĩnh. Dark/light mode. Nút tải CV. Bộ tài liệu đầy đủ. |
+| `v0.2` | 2026-08-11 | **Lên production.** Repo public `nhhandevops/nhhan-portfolio`, deploy Vercel Hobby tại `nhhan-portfolio.vercel.app`. Đã verify thật: `/en` `/vi` 200, `/` → 307, canonical + og:url + sitemap + robots đều trỏ domain thật, section GitHub trả 6 repo, tải CV và OG image OK, `x-vercel-cache: HIT` (phục vụ từ CDN, không tốn invocation). |
 
 ---
 
