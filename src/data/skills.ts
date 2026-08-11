@@ -77,6 +77,6 @@ export const skillGroups: SkillGroup[] = [
   },
   {
     name: { en: "AI & Automation", vi: "AI & Tự động hoá" },
-    items: ["Flowise", "n8n", "Google AI Studio", "Codex", "Claude", "MCP"],
+    items: ["Flowise", "n8n", "Google AI Studio", "Codex", "Claude Code", "MCP"],
   },
 ];

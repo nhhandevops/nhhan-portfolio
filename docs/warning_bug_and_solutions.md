@@ -230,6 +230,52 @@ PowerShell của agent chạy ở scope `Process = Bypass`. Đừng dựa vào v
 
 ---
 
+## ENC-001 — PowerShell 5.1 làm hỏng tiếng Việt trong file khi sửa bằng script
+
+**Triệu chứng:** sau khi chạy một lệnh PowerShell kiểu
+`(Get-Content file -Raw) -replace ... | Set-Content file -Encoding utf8`,
+toàn bộ tiếng Việt trong file biến thành ký tự rác:
+
+```
+## 0. Bắt đầu trên một máy mới     →   ## 0. Báº¯t Ä‘áº§u trÃªn má»™t mÃ¡y má»›i
+```
+
+**Nguyên nhân gốc:** `Get-Content` của **Windows PowerShell 5.1** mặc định đọc file bằng
+**codepage ANSI của hệ thống**, không phải UTF-8. File UTF-8 bị đọc sai thành từng byte
+rời, rồi `Set-Content -Encoding utf8` mã hoá lần nữa → **double-encode**. Mỗi ký tự tiếng
+Việt 2–3 byte nở thành 2–3 ký tự rác.
+
+Lỗi này **không xảy ra** với PowerShell 7+ (mặc định UTF-8), nên dễ bị bỏ sót nếu chỉ thử
+trên máy khác.
+
+**Cách xác minh:**
+
+```powershell
+Get-Content file.md -Encoding UTF8 -TotalCount 5    # ép đọc UTF-8, nếu vẫn rác thì file đã hỏng thật
+```
+
+**Cách sửa:**
+
+```powershell
+git checkout -- <file>     # lấy lại bản sạch từ git
+```
+
+Nếu chưa commit thì gần như không cứu được — nên **commit trước khi chạy script sửa hàng
+loạt**.
+
+**Cách tránh:**
+
+- **Đừng dùng PowerShell để sửa nội dung file.** Dùng trình soạn thảo, hoặc công cụ edit
+  của agent — chúng đọc/ghi UTF-8 đúng.
+- Nếu bắt buộc phải script hoá, luôn chỉ định encoding **ở cả hai đầu**:
+  `Get-Content file -Raw -Encoding UTF8` **và** `Set-Content file -Encoding utf8`.
+  Thiếu vế đọc là hỏng, dù vế ghi đã đúng.
+- Kiểm tra lại bằng mắt sau mỗi lần script đụng vào file có dấu.
+
+**Ngày:** 2026-08-11
+
+---
+
 ## NPM-001 — Cảnh báo `npm warn allow-scripts`
 
 **Triệu chứng:** mỗi lần `npm install` đều in:

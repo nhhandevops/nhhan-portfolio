@@ -6,6 +6,93 @@ Cập nhật lần cuối: 2026-08-11
 
 ---
 
+## 0. Bắt đầu trên một máy mới
+
+### 0.1 Đọc theo thứ tự này
+
+1. File này — trạng thái, quyết định kiến trúc, việc còn lại
+2. `docs/warning_bug_and_solutions.md` — các lỗi đã gặp thật. **Đọc trước khi debug bất
+   cứ thứ gì**: nhiều lỗi trông như lỗi code nhưng thực ra là môi trường.
+3. `docs/editing-content.md` — cách sửa nội dung mà không cần biết React
+4. `CLAUDE.md` — quy tắc dự án + quy ước commit/version
+5. `AGENTS.md` — nhắc rằng Next 16 khác nhiều so với kiến thức có sẵn, phải đọc docs
+   trong `node_modules/next/dist/docs/` trước khi viết code
+
+### 0.2 Yêu cầu môi trường
+
+| | |
+| --- | --- |
+| Node.js | **≥ 20.9** (Next 16 bắt buộc; Node 18 không chạy) |
+| TypeScript | ≥ 5.1 |
+| git | bất kỳ |
+
+### 0.3 Cài đặt
+
+```powershell
+git clone https://github.com/nhhandevops/nhhan-portfolio.git
+cd nhhan-portfolio
+npm install
+```
+
+### 0.4 ⚠️ Tạo `.env.local` — bước dễ quên nhất
+
+`.env.local` **KHÔNG nằm trong repo** (cố ý — nó chứa token). Máy mới clone về sẽ không
+có file này, và hậu quả là **section GitHub tự ẩn mà không báo lỗi gì**.
+
+```powershell
+Copy-Item .env.example .env.local
+```
+
+Rồi điền 3 giá trị:
+
+| Biến | Giá trị | Lấy ở đâu |
+| --- | --- | --- |
+| `GITHUB_USERNAME` | `nhhandevops` | Điền thẳng |
+| `GITHUB_TOKEN` | token GitHub | Lấy lại từ Vercel → Project → Settings → Environment Variables, hoặc tạo token mới (xem dưới) |
+| `NEXT_PUBLIC_SITE_URL` | `http://localhost:3000` | Chỉ cho máy local. Trên Vercel là URL production |
+
+**Tạo token mới:** https://github.com/settings/personal-access-tokens/new → Repository
+access = **Public Repositories (read-only)**, không cần thêm permission nào. GraphQL API
+của GitHub **luôn** đòi token, kể cả khi chỉ đọc dữ liệu công khai.
+
+Tạo token mới thì nhớ cập nhật cả trên Vercel, và **redeploy có bỏ tick "Use existing
+Build Cache"** — xem `GH-002`.
+
+### 0.5 Chạy
+
+```powershell
+npm run dev      # http://localhost:3000, tự chuyển sang /en
+npm run check    # type-check + lint, ~10 giây. Chạy sau mỗi lần sửa
+npm run build    # build production đầy đủ
+npm start        # chạy thử bản production sau khi build
+```
+
+**Windows, nếu `npm` báo "running scripts is disabled":** dùng `npm.cmd` thay cho `npm`,
+hoặc sửa dứt điểm — xem `ENV-001`.
+
+**Máy hết RAM khi build:** xem `BUILD-001`. Chạy `npx tsc --noEmit` trước để loại trừ
+lỗi type. Đừng đụng `NODE_OPTIONS`, không liên quan.
+
+**Đừng dùng `Set-Content` của PowerShell 5.1 để sửa file tiếng Việt** — xem `ENC-001`.
+
+### 0.6 Vòng làm việc
+
+```powershell
+# sửa nội dung trong src/data/ ...
+npm run check                    # bắt buộc, phải sạch
+git add -A
+git commit -m "<mô tả đợt việc>"
+git push
+```
+
+**Push lên `main` là Vercel tự deploy**, không cần bấm gì trên Vercel. Mốc quan trọng thì
+tag thêm — xem quy ước commit/version trong `CLAUDE.md`.
+
+Chỉ sửa nội dung mà không có máy: vào repo trên GitHub bấm phím `.` để mở editor trong
+trình duyệt, sửa và commit thẳng ở đó.
+
+---
+
 ## 1. Trạng thái hiện tại
 
 **🌐 Production: https://nhhan-portfolio.vercel.app**
@@ -54,7 +141,7 @@ Trang đã lên sóng, **build sạch**, và **đã đổ nội dung thật từ
 
 ---
 
-## 1.2 Lịch sử phiên bản
+### 1.2 Lịch sử phiên bản
 
 Quy ước: commit theo từng đợt việc lớn, mỗi mốc quan trọng gắn một annotated tag
 `v0.x`. Khi trang hoàn thiện thì lên `v1.0`. Chi tiết quy ước ở `CLAUDE.md`.
@@ -122,27 +209,14 @@ nhanh hơn mở menu — đổi lại không phải ship phần JS của hamburg
 
 ---
 
-## 3. Chạy dự án
-
-```powershell
-npm run dev      # http://localhost:3000 -> tự chuyển sang /en
-npm run build    # build production, có type-check
-npm start        # chạy thử bản production
-npx tsc --noEmit # chỉ type-check (nhẹ hơn build nhiều — dùng khi máy thiếu RAM)
-```
-
-Biến môi trường: copy `.env.example` thành `.env.local` rồi điền. **`.env.local` đã nằm
-trong `.gitignore` — không bao giờ commit token.**
-
----
-
-## 4. Sửa nội dung ở đâu
+## 3. Sửa nội dung ở đâu
 
 | Muốn sửa | Sửa file |
 | --- | --- |
-| Tên, chức danh, giới thiệu, email, link, đường dẫn CV | `src/data/profile.ts` |
+| Tên, chức danh, giới thiệu, email, SĐT, link, đường dẫn CV | `src/data/profile.ts` |
+| Khối "Trọng tâm" ở đầu trang | `focusAreas` trong `src/data/profile.ts` |
 | Kinh nghiệm làm việc | `src/data/experience.ts` |
-| Học vấn | `src/data/education.ts` |
+| Học vấn **và chứng chỉ** (chung một file) | `src/data/education.ts` |
 | Kỹ năng | `src/data/skills.ts` |
 | **Dự án tự chọn (kể cả private/công ty)** | `src/data/projects.ts` |
 | Username GitHub, URL site, số repo hiển thị | `src/data/site.ts` |
@@ -156,19 +230,72 @@ Không cần sửa component. Repo GitHub thì tự động, không cần đụn
 
 ---
 
-## 5. Việc còn lại
+## 4. Việc còn lại
 
-1. **Pin repo trên GitHub profile.** Hiện chưa pin repo nào nên section đang rơi về
-   6 repo push gần nhất — trong đó có cả repo tập tành (`test-jenkins`, `test-pdf`).
-   Vào https://github.com/nhhandevops pin những repo muốn khoe; section sẽ ưu tiên
-   chúng và gắn nhãn "Pinned". Không cần sửa code.
-2. Đặt ảnh đại diện vào `public/avatar.jpg`, sửa `profile.avatar` thành `"/avatar.jpg"`.
-3. Thêm ảnh minh hoạ cho 4 dự án Antsomi — xem `docs/project-images.md`.
-   **Che dữ liệu nhạy cảm trước khi đưa lên.**
-4. Push lên GitHub. **Repo phải nằm dưới tài khoản cá nhân** — gói Vercel Hobby không
-   kết nối được với repo thuộc GitHub Organization.
-5. Deploy Vercel, đặt các biến môi trường `GITHUB_USERNAME`, `GITHUB_TOKEN`,
-   `NEXT_PUBLIC_SITE_URL`. Sau khi đổi env phải redeploy **bỏ tick "Use existing
-   Build Cache"** — xem `GH-002` trong `docs/warning_bug_and_solutions.md`.
-6. **Không gắn thẻ thanh toán vào Vercel** — không có thẻ thì không thể bị trừ tiền.
-   Gói Hobby vượt quota sẽ tạm dừng chứ không xuất hoá đơn.
+Xếp theo mức ảnh hưởng. **Không cái nào chặn trang chạy** — production đang sống bình thường.
+
+### 4.1 ⭐ Rà soát câu chữ cho khớp kinh nghiệm thật
+
+Nội dung sinh từ CV, nhưng **những chỗ sau là suy diễn, không có trong CV** — chủ trang
+cần xác nhận hoặc sửa:
+
+| Chỗ | Đang ghi | Vấn đề |
+| --- | --- | --- |
+| `role` của cả 4 dự án | "Design, deployment, and operations" | **Rủi ro cao.** CV không nói vai trò từng dự án. Nếu làm cùng team chứ không chủ trì thì đang nói quá |
+| `period` của cả 4 dự án | "2024 — nay" | CV không ghi mốc riêng từng dự án |
+| `status` | 3 × `maintained`, 1 × `active` | Suy ra từ ngữ cảnh |
+| Câu mô tả đầu mỗi project card | Tự viết hoàn toàn | Xem 4 cụm bên dưới |
+| `profile.summary` | "Currently going deeper on Kubernetes" | CV ghi "Strong interest in Kubernetes" — bản trên trang mạnh hơn |
+
+Bốn cụm thêm vào mà CV không hề có, cần kiểm chứng: *"so the Infrastructure team stops
+creating accounts by hand"* · *"managed through a UI instead of hand-edited configs"* ·
+*"without waiting on engineering"* · *"hardening AWS accounts… toward CKA"*.
+
+**Toàn bộ bản tiếng Việt là bản dịch**, xưng hô "mình". Muốn trang trọng hơn thì đổi
+thành "tôi" ở `profile.summary` và `contact.subtitle` trong `src/i18n/dictionaries.ts`.
+
+### 4.2 Lọc bớt nội dung thừa
+
+- **Dự án #4 "Cloud Security, Cost, and Kubernetes Labs"** là mắt xích yếu nhất: ba dự án
+  kia là hệ thống chạy thật, cái này là mảng nghiên cứu, chữ "Labs" đứng cạnh chúng dễ bị
+  đọc thành "chưa làm thật". Cân nhắc đổi tên theo kết quả (ví dụ *AWS Account Hardening
+  & Cost Governance*) hoặc cắt hẳn, chuyển ý vào phần Kinh nghiệm.
+- **Nhóm "Networking & Security"** có 11 mục; `Security Groups` và `NACLs` là kiến thức
+  AWS cơ bản, đứng cạnh `GuardDuty`/`Detective` làm loãng cả nhóm.
+- **Nhóm "Data & Messaging"** có 9 mục. Giữ cái nào vận hành thật, bỏ cái nào chỉ chạm
+  qua — liệt kê ra là phỏng vấn sẽ hỏi vào đó.
+- Phần Dự án đang có ~18 gạch đầu dòng. Rút xuống 3 dòng mỗi dự án thì đọc thoáng hơn.
+
+### 4.3 Pin repo trên GitHub profile
+
+Chưa pin repo nào nên section GitHub rơi về "6 repo push gần nhất", trong đó có
+`test-jenkins`, `test-pdf`, `multibranch-pipeline`. Vào https://github.com/nhhandevops
+pin 4–6 repo đáng khoe — section sẽ ưu tiên chúng và gắn nhãn "Pinned".
+
+**Không cần sửa code, không cần deploy lại.** Trang tự cập nhật trong vòng 1 giờ nhờ ISR.
+
+### 4.4 Ảnh
+
+- Ảnh đại diện: đặt vào `public/avatar.jpg`, sửa `profile.avatar` thành `"/avatar.jpg"`.
+- Ảnh minh hoạ dự án: xem `docs/project-images.md`. **Che dữ liệu nhạy cảm trước khi đưa
+  lên**, hoặc dùng sơ đồ kiến trúc tự vẽ thay cho ảnh chụp hệ thống nội bộ.
+
+### 4.5 Khi trang đã ưng hoàn toàn
+
+Tag `v1.0` theo quy ước trong `CLAUDE.md`, và thêm dòng vào bảng Lịch sử phiên bản.
+
+---
+
+## 5. Nguyên tắc vận hành — đừng phá
+
+- **Không gắn thẻ thanh toán vào Vercel.** Không có thẻ thì không thể bị trừ tiền; gói
+  Hobby vượt quota sẽ tạm dừng tới đầu tháng sau chứ không xuất hoá đơn.
+- **Không bật Speed Insights / Observability Plus** trên Vercel — đó là add-on tính phí.
+- **Repo phải nằm dưới tài khoản cá nhân.** Vercel Hobby không kết nối được với repo
+  thuộc GitHub Organization.
+- **Giữ trang tĩnh 100%.** Đừng thêm middleware/proxy. Sau mỗi lần build phải kiểm tra
+  bảng Route: `/en`, `/vi`, `/en/opengraph-image`, `/vi/opengraph-image` đều phải là `●`
+  (SSG). Thấy `ƒ` (Dynamic) là có gì đó kéo route thành động — phải tìm ra nguyên nhân.
+- **Đổi biến môi trường trên Vercel → phải redeploy có bỏ tick "Use existing Build
+  Cache".** Xem `GH-002`. Bấm Redeploy thường là dính lại giá trị cũ.
+- **`.env.local` không bao giờ được commit.** Đã có trong `.gitignore`.
