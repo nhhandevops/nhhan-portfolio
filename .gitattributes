@@ -1,0 +1,14 @@
+# Chuẩn hoá xuống dòng: trong repo luôn là LF, trên máy Windows checkout ra CRLF.
+# Không có file này thì git cảnh báo "LF will be replaced by CRLF" mỗi lần add,
+# và khi build trên Vercel (Linux) diff dễ bị hiểu nhầm là "cả file đã đổi".
+* text=auto eol=lf
+
+# File nhị phân — tuyệt đối không đụng vào byte.
+*.pdf   binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.webp  binary
+*.ico   binary
+*.woff  binary
+*.woff2 binary
