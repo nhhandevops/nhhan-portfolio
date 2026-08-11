@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 
 import { site } from "@/data/site";
-import { htmlLang, locales } from "@/i18n/config";
+import { defaultLocale, htmlLang, locales } from "@/i18n/config";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
@@ -12,9 +12,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: "weekly",
     priority: 1,
     alternates: {
-      languages: Object.fromEntries(
-        locales.map((code) => [htmlLang[code], `${site.url}/${code}`]),
-      ),
+      // Giữ khớp với alternates.languages trong [lang]/layout.tsx — sửa một bên
+      // mà quên bên kia là Google nhận hai tín hiệu hreflang mâu thuẫn.
+      languages: {
+        ...Object.fromEntries(
+          locales.map((code) => [htmlLang[code], `${site.url}/${code}`]),
+        ),
+        "x-default": `${site.url}/${defaultLocale}`,
+      },
     },
   }));
 }

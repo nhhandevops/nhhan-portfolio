@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 
 import { profile } from "@/data/profile";
 import { site } from "@/data/site";
-import { htmlLang, isLocale, locales, t } from "@/i18n/config";
+import { defaultLocale, htmlLang, isLocale, locales, t } from "@/i18n/config";
 
 import "../globals.css";
 
@@ -18,6 +18,19 @@ const inter = Inter({
 export function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
 }
+
+/**
+ * Chốt danh sách locale lại đúng những gì generateStaticParams trả về.
+ *
+ * Mặc định của Next là `true`, nghĩa là mọi đường dẫn một đoạn KHÔNG có trong danh
+ * sách trên vẫn được render lúc có request rồi mới 404 — tức mỗi lần bot quét
+ * /admin, /.env, /wp-login.php là một function invocation. Kể cả /favicon.ico cũng
+ * khớp `[lang]` và rơi vào đây.
+ *
+ * `false` khiến chúng trả 404 tĩnh, không chạm tới server. Phải khai báo riêng ở
+ * cả opengraph-image.tsx — thiết lập này KHÔNG lan từ layout sang route ảnh.
+ */
+export const dynamicParams = false;
 
 export async function generateMetadata({
   params,
@@ -35,9 +48,14 @@ export async function generateMetadata({
     alternates: {
       canonical: `/${lang}`,
       // Báo cho Google biết hai bản dịch là cùng một trang.
-      languages: Object.fromEntries(
-        locales.map((code) => [htmlLang[code], `/${code}`]),
-      ),
+      languages: {
+        ...Object.fromEntries(
+          locales.map((code) => [htmlLang[code], `/${code}`]),
+        ),
+        // Người xem không dùng en lẫn vi thì đưa về bản mặc định. Thiếu dòng này
+        // Google tự đoán, và có thể đẩy recruiter nước ngoài vào bản tiếng Việt.
+        "x-default": `/${defaultLocale}`,
+      },
     },
     openGraph: {
       type: "profile",

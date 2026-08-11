@@ -9,6 +9,8 @@ import type { Locale } from "./config";
  */
 const en = {
   nav: {
+    // Tên của vùng <nav> cho trình đọc màn hình, không hiện ra mắt thường.
+    sections: "Page sections",
     experience: "Experience",
     education: "Education",
     skills: "Skills",
@@ -79,6 +81,7 @@ export type Dictionary = typeof en;
 /** Bản tiếng Việt phải khớp đúng cấu trúc của `en`. */
 const vi: Dictionary = {
   nav: {
+    sections: "Điều hướng trang",
     experience: "Kinh nghiệm",
     education: "Học vấn",
     skills: "Kỹ năng",

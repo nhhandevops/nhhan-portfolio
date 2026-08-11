@@ -17,6 +17,16 @@ export function generateStaticParams() {
 }
 
 /**
+ * Không có dòng này thì `/<bất kỳ>/opengraph-image` trả về HTTP 200 kèm ảnh PNG
+ * 44 KB thật — đã đo trên production. Hàm dưới rơi về `defaultLocale` khi lang sai
+ * nên không bao giờ 404, mỗi đường dẫn lạ là một lần chạy trọn pipeline sinh ảnh.
+ *
+ * Đặt ở layout.tsx là KHÔNG đủ: route ảnh metadata không kế thừa cấu hình segment
+ * của layout, y như trường hợp generateStaticParams ở trên (xem NEXT16-002).
+ */
+export const dynamicParams = false;
+
+/**
  * Ảnh preview khi dán link lên LinkedIn, Zalo, Messenger, Slack.
  * Sinh lúc build nên không tốn gì khi chạy.
  *

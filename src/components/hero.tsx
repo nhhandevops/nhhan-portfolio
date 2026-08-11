@@ -15,10 +15,26 @@ export function Hero({ locale, dict }: { locale: Locale; dict: Dictionary }) {
           {profile.avatar ? (
             <Image
               src={profile.avatar}
-              alt={profile.name}
+              /*
+               * alt rỗng là cố ý: <h1> ngay bên cạnh đã đọc đúng tên này rồi,
+               * để alt={profile.name} thì trình đọc màn hình đọc tên hai lần.
+               * Ảnh chân dung ở đây là trang trí. Nếu sau này bỏ <h1> đi thì
+               * phải trả lại alt có nghĩa.
+               */
+              alt=""
               width={112}
               height={112}
-              priority
+              /*
+               * Next 16 đã deprecate `priority` (xem image.md và @deprecated trong
+               * get-img-props.d.ts). Docs khuyến nghị `loading="eager"`.
+               *
+               * Đo thật trên bản build sạch: Next 16.3 VẪN chèn
+               * <link rel="preload" as="image"> kèm theo. Không sao — imageSrcSet
+               * của nó trùng hệt srcSet của thẻ <img> nên gộp về đúng một request,
+               * và ảnh này nằm trên màn hình đầu nên preload là hợp lý.
+               * Đừng bỏ prop này: thiếu nó thì ảnh bị lazy-load.
+               */
+              loading="eager"
               className="size-24 shrink-0 rounded-full border object-cover sm:size-28"
             />
           ) : null}

@@ -31,7 +31,7 @@ export function SiteHeader({ locale, dict, sections }: Props) {
             nhanh hơn là mở menu. Tránh luôn phần JS của hamburger.
           */}
           <nav
-            aria-label={locale === "vi" ? "Điều hướng trang" : "Page sections"}
+            aria-label={dict.nav.sections}
             className="hidden md:block"
           >
             <ul className="flex items-center gap-5 text-sm text-muted">

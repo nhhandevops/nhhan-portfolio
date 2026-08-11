@@ -129,7 +129,10 @@ Trang đã lên sóng, **build sạch**, và **đã đổ nội dung thật từ
   dạng E.164 (`tel:+84907683363`) để recruiter nước ngoài gọi được, hiển thị dạng nội địa.
   Muốn gỡ về sau: đặt `profile.phone = null`.
 - **Nút "Tải CV" đã bật**, trỏ tới `public/cv/cv-en.pdf` (88 KB). Chỉ có bản tiếng Anh
-  nên cả `/en` lẫn `/vi` cùng dùng file này. File có chứa số điện thoại, đã được đồng ý.
+  nên cả `/en` lẫn `/vi` cùng dùng file này. **File PDF không chứa số điện thoại lẫn
+  email** — đã kiểm bằng cách trích text từ content stream ngày 2026-08-12; dòng liên hệ
+  trong đó chỉ có tên, chức danh, thành phố và LinkedIn. Số điện thoại và email lộ ra ở
+  HTML qua `profile.phone` / `profile.email`, đó mới là chỗ cần sửa nếu muốn gỡ.
 - **KHÔNG kéo repo private vào section GitHub.** Lý do: link `github.com/<user>/<repo>`
   sẽ trả 404 với mọi người xem, và tên/mô tả repo nội bộ có thể lộ thông tin công ty.
   Việc private được kể ở `src/data/projects.ts` — đúng chỗ, không cần repo.
@@ -301,7 +304,39 @@ pin 4–6 repo đáng khoe — section sẽ ưu tiên chúng và gắn nhãn "Pi
 - Ảnh minh hoạ dự án: **chưa có**, xem `docs/project-images.md`. **Che dữ liệu nhạy cảm
   trước khi đưa lên**, hoặc dùng sơ đồ kiến trúc tự vẽ thay cho ảnh chụp hệ thống nội bộ.
 
-### 4.5 Khi trang đã ưng hoàn toàn
+### 4.5 ⭐ CV PDF đã lệch với trang — cần xuất lại
+
+`public/cv/cv-en.pdf` là **bản công bố thứ hai của cùng những tuyên bố**, và nó chưa
+theo kịp đợt lọc nội dung ở mục 4.2. Đã trích text từ content stream để kiểm (2026-08-12):
+
+| Trong PDF | Trên trang | Vì sao lệch |
+| --- | --- | --- |
+| `Trino` | đã bỏ | **Quan trọng nhất.** Bỏ khỏi trang vì chỉ chạm qua, không vận hành thật. PDF vẫn đang đưa recruiter đúng cái tuyên bố mà chủ trang đã quyết là không đỡ nổi khi bị hỏi sâu |
+| `Security Groups`, `NACLs` | đã bỏ | Cắt cho gọn, không phải vấn đề độ tin cậy — để lại cũng được |
+| `Cloud Security, Cost, and Kubernetes Labs` | đã đổi tên | Tên cũ, đúng cái chữ "Labs" đã quyết bỏ |
+| Bullet AWS Marketplace, Google AI Studio | đã cắt | Lạc đề với tên dự án mới |
+
+Ngoài ra **metadata của PDF cần dọn** (đọc được bằng `grep -a` trên chính file):
+
+- `/Author(Codex)` và `<dc:creator>Codex</dc:creator>` — CV đang đứng tên một AI agent.
+  Hai chỗ độc lập nhau, sửa một chỗ thì chỗ kia vẫn còn.
+- `/Title(Nguyen Huu Hoang An - Spartan SRE CV)` — chữ "Spartan" **không xuất hiện ở bất
+  kỳ đâu khác** trong PDF lẫn trong repo. Đây là tiêu đề trình duyệt hiển thị trên tab
+  khi ai đó mở thẳng link PDF.
+
+**Cách làm:** sửa file nguồn cho khớp `src/data/`, đặt lại Author thành tên thật và Title
+thành chuỗi trung tính, rồi xuất lại PDF. Trong Word: File → Info → Properties → Advanced
+Properties, và Check for Issues → Inspect Document → Remove document properties.
+
+Kiểm lại sau khi xuất: `grep -a -c -i "codex" public/cv/cv-en.pdf` phải ra `0`.
+
+Lưu ý: bản hiện tại **đã công bố rồi** — xuất bản mới không thu hồi được bản người khác
+đã tải về.
+
+**Quy tắc rút ra:** nội dung bị cắt vì **lý do độ chính xác** (khác với cắt cho gọn hay
+cho đẹp bố cục) thì phải cắt khỏi cả CV PDF, vì trang đăng lại chính file đó.
+
+### 4.6 Khi trang đã ưng hoàn toàn
 
 Tag `v1.0` theo quy ước trong `CLAUDE.md`, và thêm dòng vào bảng Lịch sử phiên bản.
 
