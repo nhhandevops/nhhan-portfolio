@@ -11,6 +11,8 @@ const en = {
   nav: {
     // Tên của vùng <nav> cho trình đọc màn hình, không hiện ra mắt thường.
     sections: "Page sections",
+    // Chỉ hiện khi người dùng bàn phím tab tới. Bấm là nhảy thẳng vào <main>.
+    skipToContent: "Skip to content",
     experience: "Experience",
     education: "Education",
     skills: "Skills",
@@ -82,6 +84,7 @@ export type Dictionary = typeof en;
 const vi: Dictionary = {
   nav: {
     sections: "Điều hướng trang",
+    skipToContent: "Tới nội dung chính",
     experience: "Kinh nghiệm",
     education: "Học vấn",
     skills: "Kỹ năng",

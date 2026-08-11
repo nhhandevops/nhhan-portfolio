@@ -7,6 +7,13 @@ export type Profile = {
   headline: Localized;
   /** Đoạn giới thiệu 3–4 câu cho phần đầu trang. */
   summary: Localized;
+  /**
+   * Mô tả ngắn CHỈ dùng cho metadata (thẻ description, OG, Twitter).
+   * Giữ quanh 155 ký tự: dài hơn thì Google cắt bớt khi hiển thị kết quả.
+   * Tách khỏi `summary` vì đoạn kia viết cho người đọc trên trang, dài gấp ba.
+   * Dồn từ khoá quan trọng lên đầu (SRE, Kubernetes, AWS, GCP).
+   */
+  seoDescription: Localized;
   location: Localized;
   /** Email công khai. Để chuỗi rỗng nếu không muốn hiện. */
   email: string;

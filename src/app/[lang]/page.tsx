@@ -47,7 +47,8 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
     <>
       <SiteHeader locale={lang} dict={dict} sections={sections} />
 
-      <main>
+      {/* id="content" là đích của skip link trong site-header.tsx. */}
+      <main id="content">
         <Hero locale={lang} dict={dict} />
 
         {experiences.length > 0 ? (

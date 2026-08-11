@@ -10,7 +10,16 @@ export const profile: Profile = {
 
   summary: {
     en: "System Engineer focused on cloud infrastructure, Linux systems, Docker-based platforms, and reliability engineering. I deploy and operate internal production services across AWS, GCP, and hybrid/on-prem environments — authentication, VPN connectivity, high-availability application stacks, monitoring, backup automation, and security alerting. Currently going deeper on Kubernetes and cloud-native operations, with hands-on EKS/GKE lab work using KEDA and Karpenter, and CI/CD across Jenkins, GitLab CI, AWS CodePipeline, and ArgoCD.",
-    vi: "System Engineer tập trung vào hạ tầng cloud, hệ thống Linux, nền tảng chạy trên Docker và reliability engineering. Mình triển khai và vận hành các service nội bộ trên môi trường AWS, GCP và hybrid/on-prem — gồm authentication, kết nối VPN, application stack high-availability, monitoring, tự động hoá backup và cảnh báo bảo mật. Hiện đang đào sâu Kubernetes và vận hành cloud-native, với thực nghiệm EKS/GKE dùng KEDA và Karpenter, cùng CI/CD qua Jenkins, GitLab CI, AWS CodePipeline và ArgoCD.",
+    vi: "System Engineer tập trung vào hạ tầng cloud, hệ thống Linux, nền tảng chạy trên Docker và reliability engineering. Mình triển khai và vận hành các service nội bộ chạy production trên môi trường AWS, GCP và hybrid/on-prem — gồm authentication, kết nối VPN, application stack high-availability, monitoring, tự động hoá backup và cảnh báo bảo mật. Hiện đang đào sâu Kubernetes và vận hành cloud-native, với thực nghiệm EKS/GKE dùng KEDA và Karpenter, cùng CI/CD qua Jenkins, GitLab CI, AWS CodePipeline và ArgoCD.",
+  },
+
+  /*
+   * Chỉ dùng cho metadata, KHÔNG hiện trên trang. Giữ quanh 155 ký tự.
+   * Sửa `summary` thì ngó lại cả dòng này — hai chỗ nên cùng nói một thứ.
+   */
+  seoDescription: {
+    en: "Site Reliability Engineer in Ho Chi Minh City. I deploy and operate production infrastructure on AWS and GCP — Kubernetes, Docker, CI/CD, monitoring.",
+    vi: "Site Reliability Engineer tại TP.HCM. Triển khai và vận hành hạ tầng production trên AWS và GCP — Kubernetes, Docker, CI/CD, monitoring.",
   },
 
   location: {

@@ -47,7 +47,7 @@ export const projects: Project[] = [
         "Added daily backups, health checks, operational logging, and Google Chat alerts for authentication and authorization events.",
       ],
       vi: [
-        "Triển khai xác thực tập trung bằng Authentik và Google OAuth2 để quản lý quyền truy cập của người dùng trên toàn bộ ứng dụng nội bộ.",
+        "Triển khai xác thực tập trung bằng Authentik và Google OAuth2 để quản lý quyền truy cập của người dùng trên các ứng dụng và service nội bộ.",
         "Tích hợp danh tính Google Workspace, loại bỏ việc tạo tài khoản lặp đi lặp lại và đơn giản hoá quản lý truy cập cho nhóm Hạ tầng.",
         "Bổ sung backup hằng ngày, health check, log vận hành và cảnh báo qua Google Chat cho các sự kiện xác thực và phân quyền.",
       ],

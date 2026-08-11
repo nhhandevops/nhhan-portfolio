@@ -39,7 +39,9 @@ export async function generateMetadata({
   if (!isLocale(lang)) return {};
 
   const title = `${profile.name} — ${t(profile.headline, lang)}`;
-  const description = t(profile.summary, lang);
+  // Dùng seoDescription chứ không phải summary: summary viết cho người đọc trên
+  // trang, dài 500+ ký tự nên bị Google cắt giữa câu khi hiện kết quả tìm kiếm.
+  const description = t(profile.seoDescription, lang);
 
   return {
     metadataBase: new URL(site.url),

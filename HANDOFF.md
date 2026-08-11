@@ -316,52 +316,67 @@ theo kịp đợt lọc nội dung ở mục 4.2. Đã trích text từ content 
 | `Cloud Security, Cost, and Kubernetes Labs` | đã đổi tên | Tên cũ, đúng cái chữ "Labs" đã quyết bỏ |
 | Bullet AWS Marketplace, Google AI Studio | đã cắt | Lạc đề với tên dự án mới |
 
-Ngoài ra **metadata của PDF cần dọn** (đọc được bằng `grep -a` trên chính file):
+Ngoài ra khi render ra ảnh để đọc, thấy thêm hai chỗ **chỉ có trong PDF, không có trên
+trang** — sửa luôn khi xuất lại:
 
-- `/Author(Codex)` và `<dc:creator>Codex</dc:creator>` — CV đang đứng tên một AI agent.
-  Hai chỗ độc lập nhau, sửa một chỗ thì chỗ kia vẫn còn.
-- `/Title(Nguyen Huu Hoang An - Spartan SRE CV)` — chữ "Spartan" **không xuất hiện ở bất
-  kỳ đâu khác** trong PDF lẫn trong repo. Đây là tiêu đề trình duyệt hiển thị trên tab
-  khi ai đó mở thẳng link PDF.
+- Dòng *AI & Automation Tooling* liệt kê **`Codex` hai lần**: `Flowise, N8N, Google AI
+  Studio, Codex, Claude, MCP, Codex`. Trang ghi `Claude Code`, PDF ghi `Claude`.
+- Dòng *Cloud & Infrastructure* có **cả `GCP` lẫn `Google Cloud`** — là một thứ. Trang đã
+  gộp từ lâu (xem mục 1.1), PDF thì chưa.
 
-**Cách làm:** sửa file nguồn cho khớp `src/data/`, đặt lại Author thành tên thật và Title
-thành chuỗi trung tính, rồi xuất lại PDF. Trong Word: File → Info → Properties → Advanced
-Properties, và Check for Issues → Inspect Document → Remove document properties.
+**Cách làm:** sửa file nguồn cho khớp `src/data/` rồi xuất lại đè lên `public/cv/cv-en.pdf`.
 
-Kiểm lại sau khi xuất: `grep -a -c -i "codex" public/cv/cv-en.pdf` phải ra `0`.
+#### ✅ Metadata của PDF: đã dọn xong (2026-08-12)
 
-Lưu ý: bản hiện tại **đã công bố rồi** — xuất bản mới không thu hồi được bản người khác
-đã tải về.
+Không cần làm lại phần này. Đã sửa bằng PyMuPDF, **không đụng vào nội dung trang**:
+
+| Trước | Sau |
+| --- | --- |
+| `/Title(Nguyen Huu Hoang An - Spartan SRE CV)` | `/Title(Nguyen Huu Hoang An - SRE CV)` |
+| `/Author(Codex)` | `/Author(Nguyen Huu Hoang An)` |
+| Gói XMP có `dc:title` + `dc:creator` lặp lại y vậy | đã xoá hẳn |
+| `/Producer`, `/Creator` = `Microsoft® Word 2024` | đã xoá |
+
+"Spartan" là tên một công ty chủ trang từng định ứng tuyển — đã gỡ theo yêu cầu.
+
+Đã đối chiếu trước/sau: text trích ra **giống hệt** (cùng SHA-256, 5464 ký tự, 2 trang),
+render ra ảnh thì bố cục và font nguyên vẹn.
+
+⚠️ **Xuất lại PDF từ Word là metadata bẩn trở lại.** Word tự ghi `/Producer` và lấy
+Author từ tài khoản Office. Sau mỗi lần xuất phải dọn lại rồi kiểm:
+
+```powershell
+grep -a -c -i "codex\|spartan" public/cv/cv-en.pdf    # phải ra 0
+```
+
+Lưu ý: bản cũ **đã công bố rồi** — dọn bây giờ không thu hồi được bản người khác đã tải.
 
 **Quy tắc rút ra:** nội dung bị cắt vì **lý do độ chính xác** (khác với cắt cho gọn hay
 cho đẹp bố cục) thì phải cắt khỏi cả CV PDF, vì trang đăng lại chính file đó.
 
-### 4.6 Việc nhỏ còn tồn từ đợt audit 2026-08-12
+### 4.6 ✅ Việc từ đợt audit 2026-08-12 — ĐÃ XONG
 
-Đợt audit ra 30 phát hiện, 15 sống sót sau phản biện. Phần sửa được bằng code đã làm
-trong commit `f054a9e`. Còn lại đây, **không cái nào chặn gì**, xếp theo mức đáng làm:
+Đợt audit ra 30 phát hiện, 15 sống sót sau phản biện. Toàn bộ phần sửa được bằng code đã
+xong, chia hai commit: `f054a9e` (đợt đầu) và đợt 2026-08-12 dưới đây.
 
-1. **Câu chữ tiếng Việt cần chủ trang quyết** (đây là tuyên bố của bạn, không phải việc
-   của agent tự sửa):
-   - `profile.ts` bản `vi` **rơi mất chữ "production"**. Bản `en` ghi *"internal
-     production services"*, bản `vi` chỉ còn *"các service nội bộ"*. Với hồ sơ SRE thì
-     "production" đúng là chữ phân biệt hệ thống chạy thật với lab — mà chính bạn đã
-     quyết bỏ chữ "Labs" ở dự án #4 vì lý do y hệt. Câu này còn được dùng làm
-     `<meta description>` của `/vi`.
-   - `projects.ts` dự án #1, bullet đầu: bản `vi` thêm **"toàn bộ"** mà bản `en` không
-     có (`en` chỉ nói *"internal apps and services"*), đồng thời rơi mất vế "services".
-     Hai bản đang nói phạm vi khác nhau trong khi cả `/en` lẫn `/vi` đều được index.
+1. **Câu chữ tiếng Việt** — chủ trang đã quyết:
+   - `profile.ts` bản `vi` giờ ghi *"các service nội bộ **chạy production**"*, khớp với
+     *"internal production services"* của bản `en`. Với hồ sơ SRE, "production" là chữ
+     phân biệt hệ thống chạy thật với lab. Chủ trang lưu ý: **"trước mắt nên vậy, về sau
+     thấy không ổn sẽ đổi"** — nên nếu có ngày muốn nói nhẹ hơn thì đó là quyết định đã
+     lường trước, không phải sửa sai.
+   - `projects.ts` dự án #1 bỏ **"toàn bộ"** và trả lại vế "service": *"trên các ứng dụng
+     và service nội bộ"*. Giờ khớp đúng phạm vi bản `en` (*"internal apps and services"*),
+     vốn đã được xác nhận là đúng thực tế ở mục 4.1.
 
-2. **`<meta description>` dài 533 ký tự** (bản vi 494), vì đang dùng lại nguyên đoạn
-   `profile.summary` của phần đầu trang. Google cắt bớt khi hiển thị. Cách sửa: thêm
-   `seoDescription: Localized<string>` (~155 ký tự) vào `Profile` trong `types.ts` và
-   `profile.ts`, dùng riêng cho metadata, giữ `summary` dài cho phần hero.
+2. **`<meta description>`** rút từ 533 → **149 ký tự** (bản vi 494 → 136). Thêm field
+   `seoDescription: Localized` vào `Profile`, dùng riêng cho metadata; `summary` dài vẫn
+   để cho phần đầu trang. **Sửa `summary` thì ngó lại `seoDescription`** — hai chỗ nên
+   cùng nói một thứ, không có gì tự đồng bộ giúp.
 
-3. **Chưa có skip link.** Người dùng bàn phím phải tab qua tối đa 10 điểm dừng ở header
-   trước khi tới nội dung. Link tên ở đầu trỏ `#top` nên *có* bỏ qua được, nhưng tên
-   nhãn của nó là tên chủ trang nên không ai đoán được đó là skip link. Cách sửa: gắn
-   `id="content"` cho `<main>` trong `page.tsx`, thêm một anchor `sr-only
-   focus:not-sr-only` làm con đầu tiên của `<header>`, chữ để trong `dictionaries.ts`.
+3. **Đã có skip link.** `<main id="content">` trong `page.tsx`, anchor `sr-only
+   focus:not-sr-only` là con đầu tiên của `<header>`, chữ nằm trong `dictionaries.ts`
+   (`nav.skipToContent`). Kiểm bằng cách bấm Tab ngay khi trang vừa tải.
 
 **Đã kiểm và KHÔNG phải vấn đề** (đừng mở lại): `next/image` phục vụ avatar qua
 `/_next/image` không phá cam kết tĩnh — bị bác hai lần trong audit; độ tương phản màu ở

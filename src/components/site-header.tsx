@@ -17,6 +17,18 @@ type Props = {
 export function SiteHeader({ locale, dict, sections }: Props) {
   return (
     <header className="sticky top-0 z-50 border-b bg-background/85 backdrop-blur-sm">
+      {/*
+        Ẩn cho tới khi được tab tới. Không có nó thì người dùng bàn phím phải đi
+        qua tới 10 điểm dừng ở header mới chạm được nội dung. Link tên bên dưới
+        cũng nhảy được, nhưng nhãn của nó là tên chủ trang nên không ai đoán ra.
+      */}
+      <a
+        href="#content"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:border focus:bg-background focus:px-4 focus:py-2 focus:text-sm focus:font-medium"
+      >
+        {dict.nav.skipToContent}
+      </a>
+
       <Container>
         <div className="flex h-16 items-center justify-between gap-4">
           <a
