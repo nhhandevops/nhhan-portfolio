@@ -23,8 +23,17 @@ export const profile: Profile = {
   // Công khai theo yêu cầu của chủ trang (xác nhận 2026-08-11).
   phone: { display: "0907 683 363", tel: "+84907683363" },
 
-  // Đặt ảnh vào public/avatar.jpg rồi đổi thành "/avatar.jpg".
-  avatar: null,
+  /*
+   * Ảnh 340×340 — BẮT BUỘC phải vuông và cắt sát khuôn mặt.
+   * hero.tsx render bằng `rounded-full object-cover`, tức trình duyệt cắt ô vuông ở
+   * CHÍNH GIỮA ảnh. Thả ảnh chân dung dọc từ điện thoại vào là ô giữa rơi xuống ngực,
+   * khung tròn 96px sẽ không thấy mặt. Đổi ảnh thì cắt vuông quanh mặt trước.
+   *
+   * Nhớ xoá EXIF trước khi đưa vào public/ — thư mục này là URL công khai, Google
+   * index được, gỡ sau không thu hồi được bản đã bị lấy về. Cũng đừng để lọt người
+   * lạ nhận diện được ở hậu cảnh.
+   */
+  avatar: "/avatar.jpg",
 
   links: {
     github: "https://github.com/nhhandevops",

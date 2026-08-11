@@ -286,9 +286,20 @@ pin 4–6 repo đáng khoe — section sẽ ưu tiên chúng và gắn nhãn "Pi
 
 ### 4.4 Ảnh
 
-- Ảnh đại diện: đặt vào `public/avatar.jpg`, sửa `profile.avatar` thành `"/avatar.jpg"`.
-- Ảnh minh hoạ dự án: xem `docs/project-images.md`. **Che dữ liệu nhạy cảm trước khi đưa
-  lên**, hoặc dùng sơ đồ kiến trúc tự vẽ thay cho ảnh chụp hệ thống nội bộ.
+- **Ảnh đại diện: ✅ xong (2026-08-11).** `public/avatar.jpg`, 340×340, 27.5 KB,
+  `profile.avatar = "/avatar.jpg"`.
+
+  **Ảnh đại diện bắt buộc phải vuông và cắt sát mặt.** `hero.tsx` render bằng
+  `rounded-full object-cover`, tức trình duyệt cắt ô vuông ở *chính giữa* ảnh. Bản đầu
+  đưa vào là ảnh chân dung dọc 772×1206 — ô giữa rơi xuống ngực, khung tròn 96px không
+  thấy mặt. Build vẫn xanh nên **không có gì báo cho biết**, phải tự nhìn mới ra.
+
+  Trước khi đưa ảnh bất kỳ vào `public/`: xoá EXIF (nhất là toạ độ GPS) và kiểm tra
+  không có người lạ nhận diện được ở hậu cảnh. `public/` là URL công khai, Google index
+  được, gỡ sau không thu hồi được bản đã bị lấy về.
+
+- Ảnh minh hoạ dự án: **chưa có**, xem `docs/project-images.md`. **Che dữ liệu nhạy cảm
+  trước khi đưa lên**, hoặc dùng sơ đồ kiến trúc tự vẽ thay cho ảnh chụp hệ thống nội bộ.
 
 ### 4.5 Khi trang đã ưng hoàn toàn
 
