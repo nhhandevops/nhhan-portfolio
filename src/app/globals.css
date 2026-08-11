@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+/*
+ * Tailwind v4 mặc định bật dark mode theo prefers-color-scheme. Ở đây cần cả
+ * nút chuyển thủ công, nên khai báo biến thể `dark:` bám vào class `.dark`
+ * trên <html> (script trong layout.tsx gắn class này).
+ */
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #ffffff;
+  --surface: #f8fafc;
+  --foreground: #0f172a;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --accent: #2563eb;
+  --accent-contrast: #ffffff;
+  --accent-soft: #eff6ff;
+}
+
+.dark {
+  --background: #0b0f19;
+  --surface: #131a28;
+  --foreground: #e6edf7;
+  --muted: #94a3b8;
+  --border: #1f2937;
+  --accent: #60a5fa;
+  --accent-contrast: #0b0f19;
+  --accent-soft: #16233a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-contrast: var(--accent-contrast);
+  --color-accent-soft: var(--accent-soft);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Chừa chỗ cho thanh nav dính khi nhảy tới anchor. */
+    scroll-padding-top: 5rem;
+  }
+
+  /*
+   * Tailwind v4 đổi màu mặc định của utility `border` sang currentColor.
+   * Đặt lại về token --border để không phải viết `border-border` khắp nơi.
+   */
+  *,
+  ::after,
+  ::before {
+    border-color: var(--border);
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Viền focus rõ ràng cho người dùng bàn phím. */
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* Tôn trọng cài đặt giảm chuyển động của hệ điều hành. */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    ::after,
+    ::before {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@media print {
+  /* Ẩn phần điều hướng khi in trang. */
+  header,
+  footer,
+  [data-print-hidden] {
+    display: none !important;
+  }
+}
