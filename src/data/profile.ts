@@ -53,13 +53,17 @@ export const profile: Profile = {
    * Chỉ có một bản CV tiếng Anh nên cả hai ngôn ngữ cùng trỏ về nó.
    * Có bản tiếng Việt thì đặt vào public/cv/cv-vi.pdf rồi đổi dòng `vi`.
    *
-   * Đã kiểm bằng cách trích text từ content stream (2026-08-12): PDF này KHÔNG
-   * chứa số điện thoại lẫn email. Dòng liên hệ trong đó chỉ có tên, chức danh,
-   * thành phố và LinkedIn. Số điện thoại và email lộ ra ở HTML, qua `phone` và
-   * `email` phía trên — muốn gỡ thì sửa ở đó, đừng đi sửa file PDF.
+   * ⚠️ Bản CV thay ngày 2026-08-12 CÓ chứa cả số điện thoại lẫn email ngay dòng
+   * liên hệ đầu trang (bản trước đó thì không). Đã kiểm bằng cách trích text từ
+   * content stream. Chủ trang đã đồng ý công khai cả hai — xem mục 1.1 của
+   * HANDOFF — nên đây là mở rộng phạm vi có chủ ý, không phải sơ suất.
    *
-   * Vẫn giữ cảnh báo chung: Google index được cả nội dung bên trong PDF chứ không
-   * riêng tên file, nên đừng đưa gì nhạy cảm vào bản CV đặt trong public/.
+   * Hệ quả: muốn gỡ số điện thoại thì đặt `phone = null` là đủ cho phần HTML,
+   * NHƯNG file PDF vẫn còn. Phải xuất lại CV thì mới sạch hẳn.
+   *
+   * Google index được cả nội dung bên trong PDF chứ không riêng tên file.
+   *
+   * Đổi CV thì kiểm lại dòng này còn đúng không.
    */
   cv: {
     en: "/cv/cv-en.pdf",

@@ -177,15 +177,24 @@ async function fetchRepos(
     return { ok: false, reason: "request-failed", profileUrl: null };
   }
 
+  // Áp cho CẢ hai danh sách: repo bị loại thì dù có ghim cũng không hiện.
+  const excluded = new Set(
+    site.githubExclude.map((name) => name.toLowerCase()),
+  );
+  const isExcluded = (repo: RawRepo) => excluded.has(repo.name.toLowerCase());
+
   const pinned = user.pinnedItems.nodes
     .filter(isRawRepo)
-    .filter((repo) => !repo.isArchived)
+    .filter((repo) => !repo.isArchived && !isExcluded(repo))
     .map((repo) => normalize(repo, true));
 
   const pinnedNames = new Set(pinned.map((repo) => repo.name));
 
   const recent = user.repositories.nodes
-    .filter((repo) => !repo.isArchived && !pinnedNames.has(repo.name))
+    .filter(
+      (repo) =>
+        !repo.isArchived && !isExcluded(repo) && !pinnedNames.has(repo.name),
+    )
     .map((repo) => normalize(repo, false));
 
   return {

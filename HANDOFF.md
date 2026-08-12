@@ -2,7 +2,7 @@
 
 Trạng thái và các quyết định kiến trúc. **Đây là nguồn sự thật, không phải lịch sử chat.**
 
-Cập nhật lần cuối: 2026-08-11
+Cập nhật lần cuối: 2026-08-12
 
 ---
 
@@ -128,11 +128,18 @@ Trang đã lên sóng, **build sạch**, và **đã đổ nội dung thật từ
   và xác nhận ngày 2026-08-11 sau khi được cảnh báo về rủi ro bot scrape. Link dùng
   dạng E.164 (`tel:+84907683363`) để recruiter nước ngoài gọi được, hiển thị dạng nội địa.
   Muốn gỡ về sau: đặt `profile.phone = null`.
-- **Nút "Tải CV" đã bật**, trỏ tới `public/cv/cv-en.pdf` (88 KB). Chỉ có bản tiếng Anh
-  nên cả `/en` lẫn `/vi` cùng dùng file này. **File PDF không chứa số điện thoại lẫn
-  email** — đã kiểm bằng cách trích text từ content stream ngày 2026-08-12; dòng liên hệ
-  trong đó chỉ có tên, chức danh, thành phố và LinkedIn. Số điện thoại và email lộ ra ở
-  HTML qua `profile.phone` / `profile.email`, đó mới là chỗ cần sửa nếu muốn gỡ.
+- **Nút "Tải CV" đã bật**, trỏ tới `public/cv/cv-en.pdf` (58 KB). Chỉ có bản tiếng Anh
+  nên cả `/en` lẫn `/vi` cùng dùng file này.
+
+  **⚠️ Bản CV thay ngày 2026-08-12 CÓ chứa số điện thoại và email** ngay dòng liên hệ đầu
+  trang — bản trước đó thì không. Đã kiểm bằng cách trích text từ content stream. Chủ
+  trang đã đồng ý công khai cả hai (xem gạch đầu dòng phía trên) nên đây là mở rộng phạm
+  vi có chủ ý. **Hệ quả cần nhớ:** muốn gỡ số điện thoại thì `profile.phone = null` chỉ
+  xử lý được phần HTML, file PDF vẫn còn — phải xuất lại CV mới sạch hẳn.
+
+  URL giữ nguyên `/cv/cv-en.pdf` cho link cũ khỏi gãy; thẻ `<a download="...">` trong
+  `hero.tsx` đặt tên lúc tải xuống thành `Nguyen_Huu_Hoang_An_CV.pdf`. Đổi file thì giữ
+  nguyên tên đường dẫn, đừng đổi thành tên file mới.
 - **KHÔNG kéo repo private vào section GitHub.** Lý do: link `github.com/<user>/<repo>`
   sẽ trả 404 với mọi người xem, và tên/mô tả repo nội bộ có thể lộ thông tin công ty.
   Việc private được kể ở `src/data/projects.ts` — đúng chỗ, không cần repo.
@@ -161,6 +168,7 @@ Quy ước: commit theo từng đợt việc lớn, mỗi mốc quan trọng g�
 | --- | --- | --- |
 | `v0.1` | 2026-08-11 | Khung Next.js 16 + TS + Tailwind v4. Song ngữ EN/VI. Nội dung thật từ CV. Tích hợp GitHub (pinned + repo mới, cache 1h). SEO + hreflang + sitemap + OG image tĩnh. Dark/light mode. Nút tải CV. Bộ tài liệu đầy đủ. |
 | `v0.2` | 2026-08-11 | **Lên production.** Repo public `nhhandevops/nhhan-portfolio`, deploy Vercel Hobby tại `nhhan-portfolio.vercel.app`. Đã verify thật: `/en` `/vi` 200, `/` → 307, canonical + og:url + sitemap + robots đều trỏ domain thật, section GitHub trả 6 repo, tải CV và OG image OK, `x-vercel-cache: HIT` (phục vụ từ CDN, không tốn invocation). |
+| `v0.5` | 2026-08-12 | **Ảnh, bịt lỗ render động, dọn CV.** Ảnh đại diện 340×340. `dynamicParams = false` chặn mọi path lạ khỏi chạy function — trước đó `/<bất kỳ>/opengraph-image` trả 200 kèm PNG 44 KB. Thêm favicon, `x-default` hreflang, skip link, `color-scheme`, `alt=""`; bỏ prop `priority` đã deprecated. Meta description 533 → 149 ký tự. Thay CV mới và dọn metadata (`Spartan`, `Codex` đã sạch). Chặn `test-jenkins`/`test-pdf` khỏi section GitHub. Bản `vi` thêm "chạy production", bỏ "toàn bộ". |
 | `v0.4` | 2026-08-11 | **Nội dung đã rà soát.** Chủ trang xác nhận toàn bộ chỗ suy diễn từ CV là đúng thực tế (mục 4.1 đóng, không sửa gì). Lọc bớt phần thừa (mục 4.2): dự án #4 đổi tên thành *AWS Account Hardening & Cost Governance*, skills bỏ `Security Groups`/`NACLs`/`Trino`, bullet dự án 18 → 12 dòng. Thêm `SETUP-001` (máy mới phải chạy `npx next typegen`). Bổ sung dòng `v0.3` còn thiếu trong bảng này. |
 | `v0.3` | 2026-08-11 | **Sẵn sàng bàn giao.** `HANDOFF.md` đủ để một máy khác clone về và làm tiếp mà không cần hỏi lại: hướng dẫn setup, cách tạo `.env.local`, vòng làm việc, danh sách việc còn lại kèm lý do, và các ràng buộc vận hành không được phá. Thêm `.gitattributes` chuẩn hoá xuống dòng. |
 
@@ -279,13 +287,29 @@ thành "tôi" ở `profile.summary` và `contact.subtitle` trong `src/i18n/dicti
 - **Bullet dự án 18 → 12**, mỗi dự án đúng 3 dòng theo mạch *làm gì — tích hợp gì — vận
   hành thế nào*. Các dòng bị cắt đều trùng ý với `description` của chính card đó.
 
-### 4.3 Pin repo trên GitHub profile
+### 4.3 Section GitHub — đã chặn repo test, còn lại là ghim
 
-Chưa pin repo nào nên section GitHub rơi về "6 repo push gần nhất", trong đó có
-`test-jenkins`, `test-pdf`, `multibranch-pipeline`. Vào https://github.com/nhhandevops
-pin 4–6 repo đáng khoe — section sẽ ưu tiên chúng và gắn nhãn "Pinned".
+**Làm rõ một hiểu nhầm dễ mắc:** hiện **chưa ghim repo nào cả**. Chính vì thế section
+mới rơi về nhánh dự phòng "6 repo push gần nhất", và đó là lý do `test-jenkins` với
+`test-pdf` lọt vào — không phải vì chúng được ghim.
 
-**Không cần sửa code, không cần deploy lại.** Trang tự cập nhật trong vòng 1 giờ nhờ ISR.
+**✅ Đã xử lý bằng code (2026-08-12).** `site.githubExclude` trong `src/data/site.ts`
+liệt kê repo không bao giờ được hiện, áp cho **cả** danh sách ghim lẫn danh sách push
+gần nhất, so khớp không phân biệt hoa thường:
+
+```ts
+githubExclude: ["test-jenkins", "test-pdf"],
+```
+
+Thêm repo cần giấu thì thêm tên vào mảng này, không phải sửa gì khác. `multibranch-pipeline`
+cố tình **chưa** đưa vào — chủ trang chỉ yêu cầu hai cái kia; thấy thừa thì tự thêm.
+
+Đây chỉ là **bộ lọc hiển thị**. Repo vẫn công khai trên GitHub và ai gõ thẳng URL vẫn
+thấy. Muốn giấu hẳn thì đổi sang private hoặc xoá bên GitHub.
+
+**Còn lại (việc trên GitHub, không phải code):** vào https://github.com/nhhandevops ghim
+4–6 repo đáng khoe. Section sẽ ưu tiên chúng và gắn nhãn "Pinned" thay vì đoán theo ngày
+push. **Không cần deploy lại** — trang tự cập nhật trong vòng 1 giờ nhờ ISR.
 
 ### 4.4 Ảnh
 
@@ -301,55 +325,58 @@ pin 4–6 repo đáng khoe — section sẽ ưu tiên chúng và gắn nhãn "Pi
   không có người lạ nhận diện được ở hậu cảnh. `public/` là URL công khai, Google index
   được, gỡ sau không thu hồi được bản đã bị lấy về.
 
-- Ảnh minh hoạ dự án: **chưa có**, xem `docs/project-images.md`. **Che dữ liệu nhạy cảm
-  trước khi đưa lên**, hoặc dùng sơ đồ kiến trúc tự vẽ thay cho ảnh chụp hệ thống nội bộ.
+- Ảnh minh hoạ dự án: **chưa có — chủ trang hoãn lại, sẽ bổ sung sau (xác nhận
+  2026-08-12).** Không phải bỏ sót. Xem `docs/project-images.md` khi làm. **Che dữ liệu
+  nhạy cảm trước khi đưa lên**, hoặc dùng sơ đồ kiến trúc tự vẽ thay cho ảnh chụp hệ
+  thống nội bộ.
 
-### 4.5 ⭐ CV PDF đã lệch với trang — cần xuất lại
+### 4.5 ⭐ CV PDF — đã thay bản mới, nội dung vẫn còn lệch với trang
 
-`public/cv/cv-en.pdf` là **bản công bố thứ hai của cùng những tuyên bố**, và nó chưa
-theo kịp đợt lọc nội dung ở mục 4.2. Đã trích text từ content stream để kiểm (2026-08-12):
+Chủ trang đưa bản CV mới ngày **2026-08-12** (xuất từ LibreOffice 24.2, 2 trang, 58 KB),
+đã cài vào `public/cv/cv-en.pdf`.
 
-| Trong PDF | Trên trang | Vì sao lệch |
+#### ✅ Metadata: sạch, không cần làm lại
+
+| Trường | Giá trị |
+| --- | --- |
+| `/Title` | `Nguyen Huu Hoang An - SRE CV` |
+| `/Author` | `Nguyen Huu Hoang An` (bản gốc là `Un-named` — mặc định của LibreOffice) |
+| XMP, `/Producer`, `/Creator` | đã xoá hẳn |
+
+"Spartan" (tên một công ty chủ trang từng định ứng tuyển) đã sạch ở cả bản này lẫn bản
+trước. Đã đối chiếu trước/sau khi dọn metadata: text trích ra **giống hệt**, render ra
+ảnh thì bố cục và font nguyên vẹn.
+
+#### ❌ Nội dung: vẫn chưa theo kịp đợt lọc ở mục 4.2
+
+Bản mới **có sửa** hai chỗ: bỏ "Spartan" khỏi tiêu đề, và bỏ `Codex` bị lặp hai lần ở
+dòng *AI & Automation*. Nhưng bảng dưới đây vẫn còn nguyên — đã đếm trên text trích từ
+chính file đang chạy:
+
+| Trong PDF | Trên trang | Vì sao cần sửa |
 | --- | --- | --- |
 | `Trino` | đã bỏ | **Quan trọng nhất.** Bỏ khỏi trang vì chỉ chạm qua, không vận hành thật. PDF vẫn đang đưa recruiter đúng cái tuyên bố mà chủ trang đã quyết là không đỡ nổi khi bị hỏi sâu |
 | `Security Groups`, `NACLs` | đã bỏ | Cắt cho gọn, không phải vấn đề độ tin cậy — để lại cũng được |
 | `Cloud Security, Cost, and Kubernetes Labs` | đã đổi tên | Tên cũ, đúng cái chữ "Labs" đã quyết bỏ |
 | Bullet AWS Marketplace, Google AI Studio | đã cắt | Lạc đề với tên dự án mới |
+| `GCP` **và** `Google Cloud` cùng dòng | đã gộp | Là một thứ, xem mục 1.1 |
+| `Claude` | `Claude Code` | Tên sản phẩm |
 
-Ngoài ra khi render ra ảnh để đọc, thấy thêm hai chỗ **chỉ có trong PDF, không có trên
-trang** — sửa luôn khi xuất lại:
+**Cách làm:** sửa file nguồn cho khớp `src/data/` rồi xuất lại đè lên `public/cv/cv-en.pdf`
+(**giữ nguyên tên đường dẫn**, đừng đổi thành tên file mới — xem mục 1.1).
 
-- Dòng *AI & Automation Tooling* liệt kê **`Codex` hai lần**: `Flowise, N8N, Google AI
-  Studio, Codex, Claude, MCP, Codex`. Trang ghi `Claude Code`, PDF ghi `Claude`.
-- Dòng *Cloud & Infrastructure* có **cả `GCP` lẫn `Google Cloud`** — là một thứ. Trang đã
-  gộp từ lâu (xem mục 1.1), PDF thì chưa.
+⚠️ **Xuất lại là metadata bẩn trở lại.** LibreOffice ghi `/Producer` và Author `Un-named`;
+Word ghi `/Producer` và lấy Author từ tài khoản Office. Sau mỗi lần xuất phải dọn rồi kiểm:
 
-**Cách làm:** sửa file nguồn cho khớp `src/data/` rồi xuất lại đè lên `public/cv/cv-en.pdf`.
-
-#### ✅ Metadata của PDF: đã dọn xong (2026-08-12)
-
-Không cần làm lại phần này. Đã sửa bằng PyMuPDF, **không đụng vào nội dung trang**:
-
-| Trước | Sau |
-| --- | --- |
-| `/Title(Nguyen Huu Hoang An - Spartan SRE CV)` | `/Title(Nguyen Huu Hoang An - SRE CV)` |
-| `/Author(Codex)` | `/Author(Nguyen Huu Hoang An)` |
-| Gói XMP có `dc:title` + `dc:creator` lặp lại y vậy | đã xoá hẳn |
-| `/Producer`, `/Creator` = `Microsoft® Word 2024` | đã xoá |
-
-"Spartan" là tên một công ty chủ trang từng định ứng tuyển — đã gỡ theo yêu cầu.
-
-Đã đối chiếu trước/sau: text trích ra **giống hệt** (cùng SHA-256, 5464 ký tự, 2 trang),
-render ra ảnh thì bố cục và font nguyên vẹn.
-
-⚠️ **Xuất lại PDF từ Word là metadata bẩn trở lại.** Word tự ghi `/Producer` và lấy
-Author từ tài khoản Office. Sau mỗi lần xuất phải dọn lại rồi kiểm:
-
-```powershell
-grep -a -c -i "codex\|spartan" public/cv/cv-en.pdf    # phải ra 0
+```bash
+grep -a -c -i "codex\|spartan\|un-named\|libreoffice\|microsoft" public/cv/cv-en.pdf   # phải ra 0
 ```
 
-Lưu ý: bản cũ **đã công bố rồi** — dọn bây giờ không thu hồi được bản người khác đã tải.
+Dọn bằng PyMuPDF (`pip install pymupdf`), đặt `title`/`author`, gọi `del_xml_metadata()`,
+lưu với `garbage=4, deflate=True, clean=True`. **Luôn đối chiếu text trước/sau** để chắc
+chắn chỉ metadata thay đổi.
+
+Lưu ý: các bản cũ **đã công bố rồi** — dọn bây giờ không thu hồi được bản người khác đã tải.
 
 **Quy tắc rút ra:** nội dung bị cắt vì **lý do độ chính xác** (khác với cắt cho gọn hay
 cho đẹp bố cục) thì phải cắt khỏi cả CV PDF, vì trang đăng lại chính file đó.
@@ -374,9 +401,15 @@ xong, chia hai commit: `f054a9e` (đợt đầu) và đợt 2026-08-12 dưới �
    để cho phần đầu trang. **Sửa `summary` thì ngó lại `seoDescription`** — hai chỗ nên
    cùng nói một thứ, không có gì tự đồng bộ giúp.
 
-3. **Đã có skip link.** `<main id="content">` trong `page.tsx`, anchor `sr-only
-   focus:not-sr-only` là con đầu tiên của `<header>`, chữ nằm trong `dictionaries.ts`
-   (`nav.skipToContent`). Kiểm bằng cách bấm Tab ngay khi trang vừa tải.
+3. **Đã có skip link.** `<main id="content" tabIndex={-1}>` trong `page.tsx`, anchor
+   `sr-only focus:not-sr-only` là con đầu tiên của `<header>`, chữ nằm trong
+   `dictionaries.ts` (`nav.skipToContent`). Kiểm bằng cách bấm Tab ngay khi trang vừa tải.
+
+   **Đừng bỏ `tabIndex={-1}` khỏi `<main>`.** Thẻ `<main>` vốn không nhận focus được, nên
+   thiếu nó thì trên Safari bấm skip link xong trang có cuộn nhưng con trỏ bàn phím vẫn
+   kẹt ở header — tab tiếp là quay lại đúng chỗ cũ, tức skip link vô dụng đúng với nhóm
+   người dùng nó sinh ra để phục vụ. `-1` chỉ cho phép focus bằng script/fragment, không
+   chen thêm điểm dừng vào thứ tự tab. (Sót ở lần làm đầu, bổ sung 2026-08-12.)
 
 **Đã kiểm và KHÔNG phải vấn đề** (đừng mở lại): `next/image` phục vụ avatar qua
 `/_next/image` không phá cam kết tĩnh — bị bác hai lần trong audit; độ tương phản màu ở

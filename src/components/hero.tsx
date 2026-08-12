@@ -69,7 +69,13 @@ export function Hero({ locale, dict }: { locale: Locale; dict: Dictionary }) {
           {cvHref ? (
             <a
               href={cvHref}
-              download
+              /*
+               * Đường dẫn giữ nguyên `/cv/cv-en.pdf` cho link cũ khỏi gãy, nhưng
+               * đặt tên khi tải xuống cho tử tế: recruiter lưu về sẽ thấy
+               * "Nguyen_Huu_Hoang_An_CV.pdf" chứ không phải "cv-en.pdf" nằm lẫn
+               * trong thư mục Downloads đầy file trùng tên.
+               */
+              download="Nguyen_Huu_Hoang_An_CV.pdf"
               className="inline-flex items-center rounded-md border bg-surface px-4 py-2.5 text-sm font-medium transition-colors hover:border-accent"
             >
               {dict.hero.resumeCta}

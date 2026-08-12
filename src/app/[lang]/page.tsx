@@ -47,8 +47,16 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
     <>
       <SiteHeader locale={lang} dict={dict} sections={sections} />
 
-      {/* id="content" là đích của skip link trong site-header.tsx. */}
-      <main id="content">
+      {/*
+        id="content" là đích của skip link trong site-header.tsx.
+
+        tabIndex={-1} là bắt buộc, không phải cho đẹp: <main> vốn không nhận
+        focus được, nên nếu thiếu nó thì ở Safari bấm skip link xong trang có
+        cuộn nhưng con trỏ bàn phím vẫn kẹt lại ở header — tab tiếp là quay về
+        đúng chỗ cũ. -1 nghĩa là chỉ focus bằng script/fragment, không chen thêm
+        một điểm dừng vào thứ tự tab.
+      */}
+      <main id="content" tabIndex={-1} className="focus:outline-none">
         <Hero locale={lang} dict={dict} />
 
         {experiences.length > 0 ? (
