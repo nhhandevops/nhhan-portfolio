@@ -2,7 +2,14 @@
 
 Trạng thái và các quyết định kiến trúc. **Đây là nguồn sự thật, không phải lịch sử chat.**
 
-Cập nhật lần cuối: 2026-08-12
+Cập nhật lần cuối: **2026-08-12** · đã xác minh trên production ở tag `v0.5`
+
+**Đang ở đâu:** trang chạy production ổn định, nội dung đã rà soát và chủ trang xác nhận
+xong. Còn **3 việc mở, không cái nào chặn**: ghim repo trên GitHub (mục 4.3), ảnh minh hoạ
+dự án (4.4 — đã hoãn có chủ ý), và nội dung CV PDF còn lệch với trang (4.5 — **việc còn
+lại duy nhất cần đụng vào code/nội dung**).
+
+Bắt đầu phiên mới thì đọc mục **1.3** trước để biết cái gì đã được đo thật và đo lúc nào.
 
 ---
 
@@ -119,8 +126,14 @@ Trang đã lên sóng, **build sạch**, và **đã đổ nội dung thật từ
 | Tích hợp GitHub (pinned + repo mới), cache 1h | ✅ đã chạy thật với token |
 | SEO: metadata, canonical, hreflang, sitemap, robots | ✅ |
 | OG image tự sinh, tĩnh, hiển thị đúng dấu tiếng Việt | ✅ |
-| Nội dung thật từ CV (bản 2026-08-11) | ✅ |
+| Nội dung thật từ CV, đã rà soát và chủ trang xác nhận | ✅ |
+| Ảnh đại diện, favicon | ✅ |
+| Chặn render động cho path lạ (`dynamicParams = false`) | ✅ |
+| a11y: skip link, `color-scheme`, `alt=""` | ✅ |
 | Deploy Vercel | ✅ đã verify trên production |
+| Ảnh minh hoạ dự án | ⏸️ chủ trang hoãn, sẽ bổ sung sau |
+| Ghim repo trên GitHub profile | ⏳ chưa ghim cái nào |
+| Nội dung CV PDF khớp với trang | ⏳ còn lệch, xem mục 4.5 |
 
 ### 1.1 Quyết định khi trích CV — đọc trước khi sửa nội dung
 
@@ -162,15 +175,56 @@ Trang đã lên sóng, **build sạch**, và **đã đổ nội dung thật từ
 Quy ước: commit theo từng đợt việc lớn, mỗi mốc quan trọng gắn một annotated tag
 `v0.x`. Khi trang hoàn thiện thì lên `v1.0`. Chi tiết quy ước ở `CLAUDE.md`.
 
-**Thêm một dòng vào bảng này mỗi lần tạo tag mới.**
+**Thêm một dòng vào bảng này mỗi lần tạo tag mới. Giữ thứ tự tăng dần** — bảng lộn xộn
+thì đọc lịch sử không ra được trình tự.
 
 | Version | Ngày | Nội dung |
 | --- | --- | --- |
 | `v0.1` | 2026-08-11 | Khung Next.js 16 + TS + Tailwind v4. Song ngữ EN/VI. Nội dung thật từ CV. Tích hợp GitHub (pinned + repo mới, cache 1h). SEO + hreflang + sitemap + OG image tĩnh. Dark/light mode. Nút tải CV. Bộ tài liệu đầy đủ. |
 | `v0.2` | 2026-08-11 | **Lên production.** Repo public `nhhandevops/nhhan-portfolio`, deploy Vercel Hobby tại `nhhan-portfolio.vercel.app`. Đã verify thật: `/en` `/vi` 200, `/` → 307, canonical + og:url + sitemap + robots đều trỏ domain thật, section GitHub trả 6 repo, tải CV và OG image OK, `x-vercel-cache: HIT` (phục vụ từ CDN, không tốn invocation). |
-| `v0.5` | 2026-08-12 | **Ảnh, bịt lỗ render động, dọn CV.** Ảnh đại diện 340×340. `dynamicParams = false` chặn mọi path lạ khỏi chạy function — trước đó `/<bất kỳ>/opengraph-image` trả 200 kèm PNG 44 KB. Thêm favicon, `x-default` hreflang, skip link, `color-scheme`, `alt=""`; bỏ prop `priority` đã deprecated. Meta description 533 → 149 ký tự. Thay CV mới và dọn metadata (`Spartan`, `Codex` đã sạch). Chặn `test-jenkins`/`test-pdf` khỏi section GitHub. Bản `vi` thêm "chạy production", bỏ "toàn bộ". |
-| `v0.4` | 2026-08-11 | **Nội dung đã rà soát.** Chủ trang xác nhận toàn bộ chỗ suy diễn từ CV là đúng thực tế (mục 4.1 đóng, không sửa gì). Lọc bớt phần thừa (mục 4.2): dự án #4 đổi tên thành *AWS Account Hardening & Cost Governance*, skills bỏ `Security Groups`/`NACLs`/`Trino`, bullet dự án 18 → 12 dòng. Thêm `SETUP-001` (máy mới phải chạy `npx next typegen`). Bổ sung dòng `v0.3` còn thiếu trong bảng này. |
 | `v0.3` | 2026-08-11 | **Sẵn sàng bàn giao.** `HANDOFF.md` đủ để một máy khác clone về và làm tiếp mà không cần hỏi lại: hướng dẫn setup, cách tạo `.env.local`, vòng làm việc, danh sách việc còn lại kèm lý do, và các ràng buộc vận hành không được phá. Thêm `.gitattributes` chuẩn hoá xuống dòng. |
+| `v0.4` | 2026-08-11 | **Nội dung đã rà soát.** Chủ trang xác nhận toàn bộ chỗ suy diễn từ CV là đúng thực tế (mục 4.1 đóng, không sửa gì). Lọc bớt phần thừa (mục 4.2): dự án #4 đổi tên thành *AWS Account Hardening & Cost Governance*, skills bỏ `Security Groups`/`NACLs`/`Trino`, bullet dự án 18 → 12 dòng. Thêm `SETUP-001` (máy mới phải chạy `npx next typegen`). Bổ sung dòng `v0.3` còn thiếu trong bảng này. |
+| `v0.5` | 2026-08-12 | **Ảnh, bịt lỗ render động, dọn CV.** Ảnh đại diện 340×340. `dynamicParams = false` chặn mọi path lạ khỏi chạy function — trước đó `/<bất kỳ>/opengraph-image` trả 200 kèm PNG 44 KB. Thêm favicon, `x-default` hreflang, skip link, `color-scheme`, `alt=""`; bỏ prop `priority` đã deprecated. Meta description 533 → 149 ký tự. Thay CV mới và dọn metadata (`Spartan`, `Codex` đã sạch). Chặn `test-jenkins`/`test-pdf` khỏi section GitHub. Bản `vi` thêm "chạy production", bỏ "toàn bộ". |
+
+### 1.3 Xác minh production gần nhất
+
+**Đo thật lúc 2026-08-12 09:04** trên `https://nhhan-portfolio.vercel.app`, ở commit
+`9530fa4` (tag `v0.5`). Đây là kết quả **đo được**, không phải tuyên bố từ code.
+
+| Kiểm tra | Kết quả |
+| --- | --- |
+| `/en`, `/vi` | 200 |
+| `/` | 307 → `/en` |
+| `x-vercel-cache` | **HIT** — phục vụ từ CDN, không tốn function invocation |
+| canonical | `https://nhhan-portfolio.vercel.app/en` (đúng domain) |
+| `x-default` hreflang | có |
+| Meta description | 149 ký tự (dưới ngưỡng Google cắt) |
+| Ảnh đại diện, `color-scheme`, skip link | đều có trong HTML |
+| `/icon.png` | 200 · 3 KB |
+| `/xx/opengraph-image` | **404** — `dynamicParams = false` chạy đúng |
+| `/admin` | 404 |
+| `/wp-login.php` | 403 (Vercel firewall chặn trước, không chạm tới function) |
+| Section GitHub | 6 repo, `test-jenkins`/`test-pdf` đã bị lọc |
+| Ghim repo | **chưa có repo nào được ghim** — vẫn đang rơi về nhánh "push gần nhất" |
+
+Repo đang hiện: `nhhan-portfolio`, `multilingual-studies`, `multibranch-pipeline`,
+`cicd-gcp`, `azure-data-factory`, `aws-k8s`.
+
+**Chạy lại bộ kiểm tra này** sau mỗi lần deploy lớn:
+
+```powershell
+$base = "https://nhhan-portfolio.vercel.app"
+$en = Invoke-WebRequest "$base/en" -UseBasicParsing
+"cache : $($en.Headers.'x-vercel-cache')"          # phai la HIT
+"canon : $([regex]::Match($en.Content,'canonical" href="([^"]+)"').Groups[1].Value)"
+foreach ($p in @("/xx/opengraph-image","/admin")) {  # ca hai phai 404
+  try { "$p -> $((Invoke-WebRequest "$base$p" -UseBasicParsing).StatusCode) <-- SAI" }
+  catch { "$p -> $($_.Exception.Response.StatusCode.value__) (dung)" }
+}
+```
+
+**Cập nhật mục này mỗi lần verify lại**, kèm mốc thời gian và commit. Một bảng trạng thái
+không có mốc thời gian thì sau vài tuần không ai dám tin.
 
 ---
 
